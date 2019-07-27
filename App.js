@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import Screen1 from './src/screens/screen1'
+import AppNav from './src/router/navigation'
 
 class App extends Component{
   render(){
@@ -19,4 +20,4 @@ class App extends Component{
   }
 };
 
-export default App
+export default AppNav
