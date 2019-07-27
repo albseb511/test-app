@@ -44,11 +44,14 @@ export default class Screen2 extends Component {
         success = 0
         if(success){
             Alert.alert('SUCCESS,\nnavigating to screen 1')
+            console.log('navigating to screen 1')
             this.props.navigation.navigate('Screen1')
+
         }
         else
         {
             Alert.alert('ERROR\nPLEASE TRY AGAIN')
+            console.log('error. update was not success')
         }
     }
 
