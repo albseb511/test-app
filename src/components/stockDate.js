@@ -40,7 +40,7 @@ class StockDate extends Component {
      return(
       <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Screen2',
                                                                      {  date: this.props.date,
-                                                                         val : this.props.val},
+                                                                         val :this.props.val!='5000'?this.props.val:'N/A'},
                                                                      console.log('navigate via component, val=',this.props.val,
                                                                                 'date=',this.props.date))}}>
         <View style={styles.MainContainer}> 
