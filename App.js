@@ -12,6 +12,8 @@ import {
 import Screen1 from './src/screens/screen1'
 import AppNav from './src/router/navigation'
 
+console.disableYellowBox = true;
+
 class App extends Component{
   render(){
   return (
