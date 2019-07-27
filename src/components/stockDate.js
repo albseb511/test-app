@@ -45,10 +45,10 @@ class StockDate extends Component {
                                                                                 'date=',this.props.date))}}>
         <View style={styles.MainContainer}> 
  
-            <Text>Date: {this.props.date}</Text>
-            <Text>Val: {this.props.val}</Text>
+            <Text>{this.props.date}</Text>
+            <Text>Val: {this.props.val!='5000'?this.props.val:'N/A'}</Text>
             <View style={styles.row}>
-                {this.props.date<10?(<Btn label='Delete'/>):(<Btn label='Add'/>)}
+                {this.props.val==='5000'?(<Btn label='Add'/>):(<Btn label='Delete'/>)}
             </View>
         </View>
       </TouchableOpacity>

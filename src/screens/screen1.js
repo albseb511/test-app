@@ -27,27 +27,45 @@ export default class Screen1 extends Component {
       super(props)
       this.state={
         value:'100',
-        dataSource: {},
+        data:{}
 
   
       }
     }
+    
+    getData() {
+      return fetch('https://api.airtable.com/v0/appYgCzT4je4lJQUb/TestTable?api_key=keyxjWTbfhVKdNIva')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson)
+        
+        this.setState({
+          data: responseJson.records.sort((a,b)=>(a.fields.Date>b.fields.Date?1:-1)),
+        }, function(){
+          
+        });
+
+      })
+      .catch((error) =>{
+        console.error(error);
+      });
+    }
+
 
     componentDidMount() {
       var that = this;
-      let items = Array.apply(null, Array(30)).map((v, i) => {
-        return { x: JSON.stringify(i), y: JSON.stringify(i*10) };
-      });
-      console.log(items)
-      that.setState({
-        //Setting the data source
-        dataSource: items,
+      that.getData()
 
-      });
-      
     }
 
       render(){
+        let sampleData2 = [
+          {x: '2019-01-01', y: 30},
+          {x: '2019-01-02', y: 200},
+          {x: '2019-01-03', y: 170},
+          {x: '2019-01-04', y: 250},
+          {x: '2019-01-05', y: 10}
+      ]
           return(
             <ScrollView>
                 <View style={styles.sectionContainer}>
@@ -57,19 +75,19 @@ export default class Screen1 extends Component {
 
                 
                     <FlatList
-                        data={this.state.dataSource}
+                        data={this.state.data}
                         renderItem={({ item }) => (
 
-                          <StockDate date={item.x} val={item.y}/>
+                          <StockDate date={item.fields.Date} val={item.fields.Value}/>
                         )}
                         //Setting the number of column
                         numColumns={3}
-                        keyExtractor={(item, index) => index}
+                        keyExtractor={(item, index) => item.id}
                       />
                 </View>
-                <View style={{marginTop:50}}>
-                  <PureChart data={sampleData} height={200}type='line' />
-                </View>
+                <TouchableOpacity onPress={()=>console.log(this.state.data)}style={{marginTop:50}}>
+                  <PureChart data={sampleData2} height={200}type='line' />
+                </TouchableOpacity>
             </ScrollView>
         
           )

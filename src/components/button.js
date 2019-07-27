@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  View
 } from 'react-native';
 
 
@@ -22,9 +23,9 @@ export default class Btn extends Component {
 
    render(){
      return(
-        <TouchableOpacity style={styles.button}> 
+        <View style={styles.button}> 
             <Text>{this.props.label}</Text>
-      </TouchableOpacity>
+      </View>
 
      )
    }
