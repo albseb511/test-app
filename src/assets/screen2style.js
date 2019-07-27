@@ -33,6 +33,8 @@ export default sc2 = StyleSheet.create({
         borderWidth:1,
         borderRadius:10,
         marginTop:50,
+        marginLeft:40,
+        marginRight:40,
     }
   });
   
