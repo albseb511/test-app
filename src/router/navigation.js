@@ -20,13 +20,8 @@ const Nav = createStackNavigator({
         navigationOptions: {
             title: 'Screen 2',
           }}
-},
-{
-   // headerMode: 'none',
-    navigationOptions: {
-        headerVisible: false,
-    }
-})
+}
+)
 
 const AppNav =  createAppContainer(Nav);
 
