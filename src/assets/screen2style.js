@@ -11,7 +11,8 @@ export default sc2 = StyleSheet.create({
     text:{
         flex:1,
         //fontSize:20,
-        alignSelf:'center'
+        alignSelf:'center',
+        marginLeft:50
     },
     btn:{
         height:50,
