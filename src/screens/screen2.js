@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {Text,View,
         TextInput,
-        TouchableOpacity} from 'react-native'
+        TouchableOpacity,
+        Alert} from 'react-native'
 
 import styles from '../assets/style'
 import sc2 from '../assets/screen2style'
@@ -36,6 +37,19 @@ export default class Screen2 extends Component {
         console.log('Add Button called')
         console.log(this.state.value)
         //CODE FOR PUSHING/UPDATING
+
+        //END OF PUSH/UPDATE CODE
+
+        //if failure do not stay on page, if/try
+        success = 0
+        if(success){
+            Alert.alert('SUCCESS,\nnavigating to screen 1')
+            this.props.navigation.navigate('Screen1')
+        }
+        else
+        {
+            Alert.alert('ERROR\nPLEASE TRY AGAIN')
+        }
     }
 
       render(){
