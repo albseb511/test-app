@@ -8,11 +8,8 @@ import styles from '../assets/style'
 import sc2 from '../assets/screen2style'
 import PropTypes from 'prop-types';
 
-//TODO
-// Stock value to be displayed, passed from navigation props 
-// - need to fix bug, default props is being fed always. 
-// Check navigation props.
 
+//TODO
 // Once change val to number only input
 // Add/Edit button to push info after checking for valid response.
 // Airtable integration
@@ -24,7 +21,7 @@ export default class Screen2 extends Component {
         console.log('Screen2 entered')
       super(props)
       this.state={
-        value:this.props.val,
+        value:'',
       }
     }
 
@@ -69,8 +66,8 @@ export default class Screen2 extends Component {
                     
                     <Text style={styles.sectionTitle}>Change/Add Value</Text>
                     <TextInput  style={sc2.input} 
-                                //onChange={(text) => this.setState({value:text})}
-                                value={this.state.value}>{val}
+                                onChange={(text) => this.setState({value:text})}
+                                value={this.state.value}>
                                     </TextInput>
                     <TouchableOpacity onPress={this._addBtn} style={sc2.btn}>
                         <Text style={sc2.btnText}>Add/Edit</Text>
