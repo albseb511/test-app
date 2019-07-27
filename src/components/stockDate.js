@@ -26,20 +26,23 @@ import Btn from './button'
 
 class StockDate extends Component {
     static propTypes = {
-        date: PropTypes.number,
-        val: PropTypes.number,
+        date: PropTypes.string,
+        val: PropTypes.string,
    }
 
    static defaultProps = {
         date:'X',
-        val:''
+        val:'5000'
         //date: Date.new()
   }
 
    render(){
      return(
       <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Screen2',
-                                                                     {date : this.props.date})}}>
+                                                                     {  date: this.props.date,
+                                                                         val : this.props.val},
+                                                                     console.log('navigate via component, val=',this.props.val,
+                                                                                'date=',this.props.date))}}>
         <View style={styles.MainContainer}> 
  
             <Text>Date: {this.props.date}</Text>

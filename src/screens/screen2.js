@@ -19,12 +19,7 @@ import PropTypes from 'prop-types';
 // add console.log wherever necessary
 
 export default class Screen2 extends Component {
-    static propTypes = {
-        val: PropTypes.string
-      }
-    static defaultProps = {  
-        val:'100'
-    }
+    
     constructor(props){
         console.log('Screen2 entered')
       super(props)
@@ -56,19 +51,26 @@ export default class Screen2 extends Component {
     }
 
       render(){
+        const date = this.props.navigation.getParam('date', '');
+        const val = this.props.navigation.getParam('val', '');
           return(
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Form</Text>
 
                     <View style={sc2.sctionRow}>
+                        <Text style={sc2.text}>Date</Text>
+                        <Text style={sc2.text}>{date}</Text>
+                    </View>
+
+                    <View style={sc2.sctionRow}>
                         <Text style={sc2.text}>Stock Value</Text>
-                        <Text style={sc2.text}>{this.props.val}</Text>
+                        <Text style={sc2.text}>{val}</Text>
                     </View>
                     
                     <Text style={styles.sectionTitle}>Change/Add Value</Text>
                     <TextInput  style={sc2.input} 
-                                onChangeText={(text) => this.setState({value:text})}
-                                value={this.state.value}>{this.props.value}
+                                //onChange={(text) => this.setState({value:text})}
+                                value={this.state.value}>{val}
                                     </TextInput>
                     <TouchableOpacity onPress={this._addBtn} style={sc2.btn}>
                         <Text style={sc2.btnText}>Add/Edit</Text>
