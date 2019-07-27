@@ -11,6 +11,10 @@ import {
   Dimensions
 } from 'react-native';
 
+import {
+    withNavigation
+} from 'react-navigation'
+
 import Btn from './button'
 
 //TO DO
@@ -20,10 +24,10 @@ import Btn from './button'
 // Logic for displaying Add/Delete Button needs to be done. Check if val is null
 // Function for Add, Delete
 
-export default class StockDate extends Component {
+class StockDate extends Component {
     static propTypes = {
-        date: PropTypes.string,
-        val: PropTypes.string,
+        date: PropTypes.number,
+        val: PropTypes.number,
    }
 
    static defaultProps = {
@@ -35,8 +39,7 @@ export default class StockDate extends Component {
    render(){
      return(
       <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Screen2',
-                                                          {date : this.props.date})
-                                        console.log('Navigate to Screen 2'+this.props.date)}}>
+                                                                     {date : this.props.date})}}>
         <View style={styles.MainContainer}> 
  
             <Text>Date: {this.props.date}</Text>
@@ -51,6 +54,7 @@ export default class StockDate extends Component {
    }
  }
 
+ export default withNavigation(StockDate)
 
  const styles = StyleSheet.create({
     

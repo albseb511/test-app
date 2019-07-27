@@ -8,12 +8,9 @@ import {Text,View,
 import styles from '../assets/style'
 import StockDate from '../components/stockDate'
 
-
 //TODO
 // Top Panel height for scrollview
 // Bottom Panel 
-
-
 
 export default class Screen1 extends Component {
     constructor(props){
@@ -44,12 +41,13 @@ export default class Screen1 extends Component {
           return(
             <ScrollView>
                 <View style={styles.sectionContainer}>
+              
                     <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Screen2',
                                                                                   {val:this.state.value})
                                                     console.log('Navigating to screen 2...')}}>
                         <Text style={styles.sectionTitle}>Screen1</Text>
                     </TouchableOpacity>  
-
+                
                     <FlatList
                         data={this.state.dataSource}
                         renderItem={({ item }) => (
@@ -61,6 +59,8 @@ export default class Screen1 extends Component {
                         keyExtractor={(item, index) => index}
                       />
                 </View>
+
+
             </ScrollView>
         
           )
