@@ -9,17 +9,12 @@ import styles from '../assets/style'
 import StockDate from '../components/stockDate'
 
 //TODO
-// Top Panel height for scrollview
-// Bottom Panel
+// Top Panel
+// Bottom Panel - 
+// 1. Map Sort based on val, and use corresponding dates.
+// 2. Profits/Best case scenaria = 10*(sell price - buy price)
+// 3. Map Purechart with data
 import PureChart from 'react-native-pure-chart';
-
-let sampleData = [
-  {x: '2018-01-01', y: 30},
-  {x: '2018-01-02', y: 200},
-  {x: '2018-01-03', y: 170},
-  {x: '2018-01-04', y: 250},
-  {x: '2018-01-05', y: 10}
-]
 
 export default class Screen1 extends Component {
     constructor(props){
@@ -78,7 +73,7 @@ export default class Screen1 extends Component {
                         data={this.state.data}
                         renderItem={({ item }) => (
 
-                          <StockDate date={item.fields.Date} val={item.fields.Value}/>
+                          <StockDate date={item.fields.Date} val={item.fields.Value} id={item.id} data={item}/>
                         )}
                         //Setting the number of column
                         numColumns={3}

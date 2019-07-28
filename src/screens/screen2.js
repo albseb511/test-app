@@ -2,15 +2,18 @@ import React, {Component} from 'react'
 import {Text,View,
         TextInput,
         TouchableOpacity,
-        Alert} from 'react-native'
+        Alert,
+        ScrollView} from 'react-native'
 
 import styles from '../assets/style'
 import sc2 from '../assets/screen2style'
 import PropTypes from 'prop-types';
 
+//Airtable
+import Airtable from 'airtable'
+import {API_KEY,APP_NAME,TABLE_NAME} from '../assets/airtable_api'
 
 //TODO
-// Once change val to number only input
 // Add/Edit button to push info after checking for valid response.
 // Airtable integration
 // add console.log wherever necessary
@@ -25,33 +28,44 @@ export default class Screen2 extends Component {
       }
     }
 
-    _addBtn = () => {
+    _addBtn = (id,date) => {
         console.log('Add Button called')
         console.log(this.state.value)
-        //CODE FOR PUSHING/UPDATING
+        //CODE FOR PUSHING/UPDATINGgit
+        var base = new Airtable({apiKey: API_KEY}).base(APP_NAME);
+        console.log(id)
+        //FIND WHAT THE BUG IS. ID/date/value passed as argument is not working. ref rec4lIf4RalCHXGWC for 30th June 
+        base(TABLE_NAME).update(data.id,{
+            "Value": this.state.value
+          }, function(err, record) {
+            if (err) {
+              console.error(err);
 
+            Alert.alert('ERROR\nPLEASE TRY AGAIN')
+            console.log('error. update was not success')
+
+              return;
+            }
+            console.log(record.getId());
+            
+          });
+          
         //END OF PUSH/UPDATE CODE
 
         //if failure do not stay on page, if/try
-        success = 0
-        if(success){
-            Alert.alert('SUCCESS,\nnavigating to screen 1')
+            Alert.alert('SUCCESS,\nnavigating to screen 1',this.state.value)
             console.log('navigating to screen 1')
             this.props.navigation.navigate('Screen1')
-
-        }
-        else
-        {
-            Alert.alert('ERROR\nPLEASE TRY AGAIN')
-            console.log('error. update was not success')
-        }
     }
 
       render(){
         const date = this.props.navigation.getParam('date', '');
         const val = this.props.navigation.getParam('val', '');
+        const id = this.props.navigation.getParam('id', '');
+        data = this.props.navigation.getParam('data', '');
+        //console.log(date,val,id)
           return(
-                <View style={styles.sectionContainer}>
+                <ScrollView style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Form</Text>
 
                     <View style={sc2.sctionRow}>
@@ -66,14 +80,16 @@ export default class Screen2 extends Component {
                     
                     <Text style={styles.sectionTitle}>Change/Add Value</Text>
                     <TextInput  style={sc2.input} 
-                                onChange={(text) => this.setState({value:text})}
-                                value={this.state.value}>
+                                onChangeText={value => this.setState({value})}
+                                value={this.state.value}
+                                keyboardType={'numeric'}
+                                placeholder='enter new value' >
                                     </TextInput>
-                    <TouchableOpacity onPress={this._addBtn} style={sc2.btn}>
+                    <TouchableOpacity onPress={(id,date)=>this._addBtn(id)} style={sc2.btn}>
                         <Text style={sc2.btnText}>Add/Edit</Text>
                     </TouchableOpacity>
 
-                </View>
+                </ScrollView>
         
           )
       }

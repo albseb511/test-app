@@ -5,8 +5,8 @@ export default sc2 = StyleSheet.create({
         flexDirection:'row',
         flex:1,
         height:60,
-        marginTop:50,
-        marginBottom:50,
+        marginTop:10,
+        marginBottom:10,
     },
     text:{
         flex:1,

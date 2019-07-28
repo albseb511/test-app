@@ -28,11 +28,15 @@ class StockDate extends Component {
     static propTypes = {
         date: PropTypes.string,
         val: PropTypes.string,
+        id: PropTypes.string,
+        data: PropTypes.object,
    }
 
    static defaultProps = {
         date:'X',
-        val:'5000'
+        val:'5000',
+        id:'',
+        data:{}
         //date: Date.new()
   }
 
@@ -40,9 +44,12 @@ class StockDate extends Component {
      return(
       <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Screen2',
                                                                      {  date: this.props.date,
-                                                                         val :this.props.val!='5000'?this.props.val:'N/A'},
+                                                                         val :this.props.val!='5000'?this.props.val:'N/A',
+                                                                         id: this.props.id,
+                                                                         data: this.props.data},
                                                                      console.log('navigate via component, val=',this.props.val,
-                                                                                'date=',this.props.date))}}>
+                                                                                'date=',this.props.date,
+                                                                                'id = ',this.props.id))}}>
         <View style={styles.MainContainer}> 
  
             <Text>{this.props.date}</Text>
