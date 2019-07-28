@@ -78,7 +78,7 @@ export default class Screen2 extends Component {
                                 onChangeText={value => this.setState({value})}
                                 value={this.state.value}
                                 keyboardType={'numeric'}
-                                placeholder='enter new value' >
+                                placeholder={val!='N/A'?val:'enter new value'} >
                                     </TextInput>
                     <TouchableOpacity onPress={(id,date)=>this._addBtn(id)} style={sc2.btn}>
                         <Text style={sc2.btnText}>Add/Edit</Text>

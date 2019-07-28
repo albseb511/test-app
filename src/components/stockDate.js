@@ -11,9 +11,7 @@ import {
   Dimensions
 } from 'react-native';
 
-import {
-    withNavigation
-} from 'react-navigation'
+import {withNavigation} from 'react-navigation'
 
 import Btn from './button'
 
@@ -34,13 +32,14 @@ class StockDate extends Component {
         val: PropTypes.string,
         id: PropTypes.string,
         data: PropTypes.object,
+        updateFunction: PropTypes.func
    }
 
    static defaultProps = {
         date:'X',
         val:'5000',
         id:'',
-        data:{}
+        data:{},
         //date: Date.new()
   }
   _HandleCellNav(){
@@ -51,13 +50,13 @@ class StockDate extends Component {
         data: this.props.data},
     console.log('navigate via component, val=',this.props.val,
                'date=',this.props.date,
-               'id = ',this.props.id))
+               'id = ',this.props.id,))
   }
 
   _HandleButton(){
     var base = new Airtable({apiKey: API_KEY}).base(APP_NAME);
     if(this.props.val!='5000')
-    {
+    {   
         base(TABLE_NAME).update(this.props.data.id,{
             "Value": ''
           }, function(err, record) {
@@ -70,11 +69,15 @@ class StockDate extends Component {
               return;
             }
             console.log('Delete was success')
+            console.log('Need to invoke update')
+            //this.props.updateFunction(this.props.id)
             console.log(record.getId());
+            
             
           })
     }
     else{
+        console.log('Add a value, redirect to screen 2')
         this._HandleCellNav()
     }
   }

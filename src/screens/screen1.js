@@ -8,9 +8,10 @@ import {Text,View,
 import styles from '../assets/style'
 import StockDate from '../components/stockDate'
 
+import { withNavigation } from "react-navigation";
+
 //TODO
-// Top Panel
-// Refresh data on re-entry
+// Need to pass function as prop to child component stockDate.
 // Bottom Panel - 
 // 1. Map Sort based on val, and use corresponding dates.
 // 2. Profits/Best case scenaria = 10*(sell price - buy price)
@@ -24,13 +25,14 @@ export default class Screen1 extends Component {
       this.state={
         value:'100',
         data:{},
-        chartData:{}
-
+        chartData:{},
+        rCheck:true
   
       }
     }
     
     getData() {
+      console.log('getData called')
       return fetch('https://api.airtable.com/v0/appYgCzT4je4lJQUb/TestTable?api_key=keyxjWTbfhVKdNIva')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -38,7 +40,8 @@ export default class Screen1 extends Component {
         
         this.setState({
           data: responseJson.records.sort((a,b)=>(a.fields.Date<b.fields.Date?1:-1)),
-          chartData: responseJson.records.sort((a,b)=>(a.fields.val>b.fields.val?1:-1))
+          chartData: responseJson.records.sort((a,b)=>(a.fields.val>b.fields.val?1:-1)),
+          rCheck:false
         }, function(){
           
         });
@@ -47,16 +50,40 @@ export default class Screen1 extends Component {
       .catch((error) =>{
         console.error(error);
       });
+      
+      console.log(rCheck)
     }
 
+    onRef(){
+      this.setState({rCheck:true})
+    }
 
     componentDidMount() {
       var that = this;
-      that.getData()
+      const { navigation } = this.props;
+      this.focusListener = navigation.addListener("didFocus", () => {
+        // The screen is focused
+        // Call getData
+        that.getData()
+      });
+      
+      //console.log('rcheck=',rCheck)
+      //that.state.rCheck?console.log('refresh'):console.log('no refresh')
 
     }
+    componentWillUnmount() {
+      // Remove the event listener
+      this.focusListener.remove();
+    }
+
+    onDel(){
+      console.log('refresh called onDel')
+      this.getData()
+    }
+  
 
       render(){
+        
         let sampleData2 = [
           {x: '2019-01-01', y: 30},
           {x: '2019-01-02', y: 200},
@@ -74,9 +101,15 @@ export default class Screen1 extends Component {
                 
                     <FlatList
                         data={this.state.data}
+                        refreshing={this.state.rCheck}
+                        onRefresh={()=>this.onRef()}
                         renderItem={({ item }) => (
 
-                          <StockDate date={item.fields.Date} val={item.fields.Value} id={item.id} data={item}/>
+                          <StockDate date={item.fields.Date} 
+                                      val={item.fields.Value} 
+                                      id={item.id} 
+                                      data={item}
+                                      updateFunction={()=>this.onDel()}/>
                         )}
                         //Setting the number of column
                         numColumns={3}
