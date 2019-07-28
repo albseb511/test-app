@@ -10,6 +10,7 @@ import StockDate from '../components/stockDate'
 
 //TODO
 // Top Panel
+// Refresh data on re-entry
 // Bottom Panel - 
 // 1. Map Sort based on val, and use corresponding dates.
 // 2. Profits/Best case scenaria = 10*(sell price - buy price)
@@ -22,7 +23,8 @@ export default class Screen1 extends Component {
       super(props)
       this.state={
         value:'100',
-        data:{}
+        data:{},
+        chartData:{}
 
   
       }
@@ -35,7 +37,8 @@ export default class Screen1 extends Component {
         console.log(responseJson)
         
         this.setState({
-          data: responseJson.records.sort((a,b)=>(a.fields.Date>b.fields.Date?1:-1)),
+          data: responseJson.records.sort((a,b)=>(a.fields.Date<b.fields.Date?1:-1)),
+          chartData: responseJson.records.sort((a,b)=>(a.fields.val>b.fields.val?1:-1))
         }, function(){
           
         });
@@ -80,7 +83,7 @@ export default class Screen1 extends Component {
                         keyExtractor={(item, index) => item.id}
                       />
                 </View>
-                <TouchableOpacity onPress={()=>console.log(this.state.data)}style={{marginTop:50}}>
+                <TouchableOpacity onPress={(i)=>console.log(this.state.data)}style={{marginTop:50}}>
                   <PureChart data={sampleData2} height={200}type='line' />
                 </TouchableOpacity>
             </ScrollView>

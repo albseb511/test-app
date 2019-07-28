@@ -17,6 +17,10 @@ import {
 
 import Btn from './button'
 
+import Airtable from 'airtable'
+import {API_KEY,APP_NAME,TABLE_NAME} from '../assets/airtable_api'
+
+
 //TO DO
 // Add value
 // Add real date values
@@ -39,23 +43,53 @@ class StockDate extends Component {
         data:{}
         //date: Date.new()
   }
+  _HandleCellNav(){
+    this.props.navigation.navigate('Screen2',
+    {  date: this.props.date,
+        val :this.props.val!='5000'?this.props.val:'N/A',
+        id: this.props.id,
+        data: this.props.data},
+    console.log('navigate via component, val=',this.props.val,
+               'date=',this.props.date,
+               'id = ',this.props.id))
+  }
+
+  _HandleButton(){
+    var base = new Airtable({apiKey: API_KEY}).base(APP_NAME);
+    if(this.props.val!='5000')
+    {
+        base(TABLE_NAME).update(this.props.data.id,{
+            "Value": ''
+          }, function(err, record) {
+            if (err) {
+              console.error(err);
+
+            Alert.alert('ERROR\nPLEASE TRY AGAIN')
+            console.log('error. Delete was not success')
+
+              return;
+            }
+            console.log('Delete was success')
+            console.log(record.getId());
+            
+          })
+    }
+    else{
+        this._HandleCellNav()
+    }
+  }
 
    render(){
      return(
-      <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Screen2',
-                                                                     {  date: this.props.date,
-                                                                         val :this.props.val!='5000'?this.props.val:'N/A',
-                                                                         id: this.props.id,
-                                                                         data: this.props.data},
-                                                                     console.log('navigate via component, val=',this.props.val,
-                                                                                'date=',this.props.date,
-                                                                                'id = ',this.props.id))}}>
+      <TouchableOpacity onPress={()=>{this._HandleCellNav()}}>
         <View style={styles.MainContainer}> 
  
             <Text>{this.props.date}</Text>
             <Text>Val: {this.props.val!='5000'?this.props.val:'N/A'}</Text>
             <View style={styles.row}>
+                <TouchableOpacity onPress={()=>this._HandleButton()}>
                 {this.props.val==='5000'?(<Btn label='Add'/>):(<Btn label='Delete'/>)}
+                </TouchableOpacity>
             </View>
         </View>
       </TouchableOpacity>

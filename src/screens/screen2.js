@@ -14,9 +14,6 @@ import Airtable from 'airtable'
 import {API_KEY,APP_NAME,TABLE_NAME} from '../assets/airtable_api'
 
 //TODO
-// Add/Edit button to push info after checking for valid response.
-// Airtable integration
-// add console.log wherever necessary
 
 export default class Screen2 extends Component {
     
@@ -34,7 +31,6 @@ export default class Screen2 extends Component {
         //CODE FOR PUSHING/UPDATINGgit
         var base = new Airtable({apiKey: API_KEY}).base(APP_NAME);
         console.log(id)
-        //FIND WHAT THE BUG IS. ID/date/value passed as argument is not working. ref rec4lIf4RalCHXGWC for 30th June 
         base(TABLE_NAME).update(data.id,{
             "Value": this.state.value
           }, function(err, record) {
@@ -52,7 +48,6 @@ export default class Screen2 extends Component {
           
         //END OF PUSH/UPDATE CODE
 
-        //if failure do not stay on page, if/try
             Alert.alert('SUCCESS,\nnavigating to screen 1',this.state.value)
             console.log('navigating to screen 1')
             this.props.navigation.navigate('Screen1')
