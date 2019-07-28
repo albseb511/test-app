@@ -37,6 +37,19 @@ export default styles = StyleSheet.create({
       paddingRight: 12,
       textAlign: 'right',
     },
+    sectionRow:{
+      flexDirection:'row',
+      flex:1,
+      height:60,
+      marginTop:10,
+      marginBottom:10,
+  },
+  text:{
+      flex:1,
+      //fontSize:20,
+      alignSelf:'center',
+      marginLeft:50
+  },
   });
   
   

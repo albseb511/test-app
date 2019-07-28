@@ -3,7 +3,8 @@ import {Text,View,
         TouchableOpacity,
         Image,
         FlatList,
-        ScrollView} from 'react-native'
+        ScrollView,
+        ActivityIndicator} from 'react-native'
 
 import styles from '../assets/style'
 import StockDate from '../components/stockDate'
@@ -13,11 +14,11 @@ import { withNavigation } from "react-navigation";
 //TODO
 // Need to pass function as prop to child component stockDate.
 // Bottom Panel - 
-// 1. Map Sort based on val, and use corresponding dates.
-// 2. Profits/Best case scenaria = 10*(sell price - buy price)
-// 3. Map Purechart with data
-import PureChart from 'react-native-pure-chart';
+// Map Purechart with data / HighCharts / D3
+// Fix condition for NaN for profit check
 
+import PureChart from 'react-native-pure-chart';
+let testdata={}
 export default class Screen1 extends Component {
     constructor(props){
       console.log('Home-page')
@@ -26,12 +27,16 @@ export default class Screen1 extends Component {
         value:'100',
         data:{},
         chartData:{},
-        rCheck:true
+        test:{},
+        rCheck:true,
+        d1:0,
+        d2:0,
+        max_highDiff:0
   
       }
     }
     
-    getData() {
+    getData=()=> {
       console.log('getData called')
       return fetch('https://api.airtable.com/v0/appYgCzT4je4lJQUb/TestTable?api_key=keyxjWTbfhVKdNIva')
       .then((response) => response.json())
@@ -39,10 +44,10 @@ export default class Screen1 extends Component {
         console.log(responseJson)
         
         this.setState({
-          data: responseJson.records.sort((a,b)=>(a.fields.Date<b.fields.Date?1:-1)),
-          chartData: responseJson.records.sort((a,b)=>(a.fields.val>b.fields.val?1:-1)),
+          data: responseJson.records.sort((a,b)=>(a.fields.Date>b.fields.Date?1:-1)),
           rCheck:false
         }, function(){
+          this.setState({chartData: this.state.data})
           
         });
 
@@ -50,21 +55,62 @@ export default class Screen1 extends Component {
       .catch((error) =>{
         console.error(error);
       });
-      
-      console.log(rCheck)
     }
+
+ 
 
     onRef(){
       this.setState({rCheck:true})
     }
 
+    _profitCheck=()=>{
+      console.log('profit check called')
+      let len = this.state.chartData.length
+      let diff = Array(len-1).fill(0)
+      for(let i=0;i<len-1;i++)
+        diff[i]= Array(len).fill(0)
+      
+        for(let i=0;i<len-1;i++)
+          for(let j=i+1;j<len;j++)
+            diff[i][j]= parseInt(this.state.chartData[j].fields.Value)-parseInt(this.state.chartData[i].fields.Value)
+        console.log(diff,typeof(diff[0]),diff[0].length)
+
+        let highDiff = Array(len-1).fill(0)
+        for(let i=0;i<len-1;i++)
+          highDiff[i]=diff[i].reduce((a,b)=>(a>b?a:b))
+        
+        this.setState({max_highDiff:highDiff.reduce((a,b)=>a>b?a:b)})
+          console.log(this.state.max_highDiff)
+
+
+        for(let i=0;i<len-1;i++)
+          for(let j=0;j<len;j++)
+          if(this.state.max_highDiff===diff[i][j])
+          { 
+            this.setState({d1:i,
+                            d2:j})
+            console.log(i+1,j+1)
+          }
+        
+        console.log(d1,d2)
+    }
+
+    TestFunction(){
+      //console.log(this.state.chartData,data)
+      //console.log(data.filter(d=>(d.fields.Date)))
+      
+    }
+
     componentDidMount() {
       var that = this;
-      const { navigation } = this.props;
-      this.focusListener = navigation.addListener("didFocus", () => {
+      const { navigation } = that.props;
+      that.focusListener = navigation.addListener("didFocus", () => {
         // The screen is focused
         // Call getData
-        that.getData()
+        that.getData().then(()=>that._profitCheck())
+        
+        //this.setState({chartData: this.state.data.records.sort((a,b)=>(a.fields.val>b.fields.val?1:-1)),})
+        //console.log('chart data is :',this.state.chartData )
       });
       
       //console.log('rcheck=',rCheck)
@@ -79,6 +125,7 @@ export default class Screen1 extends Component {
     onDel(){
       console.log('refresh called onDel')
       this.getData()
+      that._profitCheck()
     }
   
 
@@ -91,7 +138,7 @@ export default class Screen1 extends Component {
           {x: '2019-01-04', y: 250},
           {x: '2019-01-05', y: 10}
       ]
-          return(
+      if(this.state.rCheck===false)return(
             <ScrollView>
                 <View style={styles.sectionContainer}>
               
@@ -116,11 +163,23 @@ export default class Screen1 extends Component {
                         keyExtractor={(item, index) => item.id}
                       />
                 </View>
-                <TouchableOpacity onPress={(i)=>console.log(this.state.data)}style={{marginTop:50}}>
+                <TouchableOpacity onPress={(i)=>{this.TestFunction()}}style={{marginTop:50}}>
                   <PureChart data={sampleData2} height={200}type='line' />
                 </TouchableOpacity>
+                <View style={styles.sectionRow}>
+                    <Text style={styles.text}>Max Profit for 10 stocks</Text>
+                    <Text style={styles.text}>Rs. {this.state.max_highDiff*10}</Text>
+                </View>
+                <View style={styles.sectionRow}>
+                    <Text style={styles.text}>Buy Date: {this.state.d1+1} June</Text>
+                    <Text style={styles.text}>Sell Date: {this.state.d2+1} June</Text>
+                </View>
             </ScrollView>
         
           )
+          else
+          {
+            return(<ActivityIndicator/>)
+          }
       }
     }
