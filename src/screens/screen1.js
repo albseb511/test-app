@@ -11,7 +11,7 @@ import StockDate from '../components/stockDate'
 
 import { withNavigation } from "react-navigation";
 
-import { LineChart, Grid } from 'react-native-svg-charts'
+import { LineChart, Grid, YAxis } from 'react-native-svg-charts'
 //TODO
 // Need to pass function as prop to child component stockDate. 
 // Remove the button component and bring it inside the main view.
@@ -74,6 +74,8 @@ export default class Screen1 extends Component {
       //let cDataX = Array(len).fill('')
       //let cDataY = Array(len).fill('')
       let cDataT = []
+
+      //Fill diff array and also create array with date and value.
       for(let i=0;i<len-1;i++){
         diff[i]= Array(len).fill(0)
         switch(i){
@@ -84,7 +86,9 @@ export default class Screen1 extends Component {
       }
       console.log(cDataT,typeof(cDataT))
       //chartArray = Array(cDataT).map((item) => item.x)
-      chartArray = cDataT.map((a)=>a.y!=null?parseInt(a.y):'')
+
+      //map the data into Array for chart 
+      chartArray = cDataT.map((a)=>a.y!=null?parseInt(a.y):{})
       console.log(chartArray,typeof(chartArray))
 
         for(let i=0;i<len-1;i++){
@@ -99,7 +103,7 @@ export default class Screen1 extends Component {
           
         }
         console.log(diff,typeof(diff[0]),diff[0].length)
-
+        
         let highDiff = Array(len-1).fill(0)
         for(let i=0;i<len-1;i++)
           highDiff[i]=diff[i].reduce((a,b)=>(a>b?a:b))
@@ -188,9 +192,19 @@ export default class Screen1 extends Component {
                         keyExtractor={(item, index) => item.id}
                       />
                 </View>
-                <TouchableOpacity onPress={()=>{}}style={{marginTop:50}}>
+                <TouchableOpacity onPress={()=>{}}style={{marginTop:50,height: 200, flexDirection: 'row' }}>
+                        <YAxis
+                            data={chartArray}
+                            contentInset={{top:20,bottom:20}}
+                            svg={{
+                                fill: 'grey',
+                                fontSize: 10,
+                            }}
+                            numberOfTicks={10}
+                            formatLabel={(value) => `Rs.${value}`}
+                             />
                         <LineChart
-                                  style={{ height: 200 }}
+                                  style={{ flex:1, height: 200, marginLeft:20 }}
                                   data={chartArray}
                                   svg={{ stroke: 'rgb(134, 65, 244)' }}
                                   contentInset={{ top: 20, bottom: 20 }}
@@ -206,6 +220,12 @@ export default class Screen1 extends Component {
                     <Text style={styles.text}>Buy Date: {this.state.data[this.state.d1].fields.Date}</Text>
                     <Text style={styles.text}>Sell Date: {this.state.data[this.state.d2].fields.Date}</Text>
                 </View>
+                
+                <View style={styles.sectionRow}>
+                    <Text style={styles.text}>Start Date: {this.state.data[0].fields.Date}</Text>
+                    <Text style={styles.text}>End Date: {this.state.data[this.state.data.length-1].fields.Date}</Text>
+                </View>
+                
                 <TouchableOpacity style={styles.btn} onPress={()=>this.onDel()}>
                   <Text>REFRESH</Text>
                 </TouchableOpacity>
