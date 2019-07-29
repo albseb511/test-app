@@ -31,6 +31,7 @@ react-native run-android
 ### Description
 
 1. Screen 1
+```
 a. The top panel shows a month calendar(check google calendar month view) :-
 i. Stock prices by date.
 ii. Add option for missing stock prices
@@ -40,10 +41,13 @@ i. Maximum profit that can be attained by buying and selling 10 units of the
 stock only once.
 ii. The graph showing the stock prices trend.
 iii. Buy and the sell date.
+```
 
 2. Screen 2:
+```
 a. The Header
 i. Back Button
 b. The Form
 i. Input field to enter stock price
 ii. Button to add(or edit) stock price
+```
