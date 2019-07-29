@@ -11,6 +11,7 @@ import StockDate from '../components/stockDate'
 
 import { withNavigation } from "react-navigation";
 
+import { LineChart, Grid } from 'react-native-svg-charts'
 //TODO
 // Need to pass function as prop to child component stockDate. 
 // Remove the button component and bring it inside the main view.
@@ -18,7 +19,7 @@ import { withNavigation } from "react-navigation";
 // Map Purechart with data / HighCharts / D3
 // Multiple scenarios?
 
-let testdata={}
+let chartArray=[]
 export default class Screen1 extends Component {
     constructor(props){
       console.log('Home-page')
@@ -70,8 +71,8 @@ export default class Screen1 extends Component {
       console.log('profit check called')
       let len = this.state.data.length
       let diff = Array(len-1).fill(0)
-      let cDataX = Array(len).fill('')
-      let cDataY = Array(len).fill('')
+      //let cDataX = Array(len).fill('')
+      //let cDataY = Array(len).fill('')
       let cDataT = []
       for(let i=0;i<len-1;i++){
         diff[i]= Array(len).fill(0)
@@ -82,6 +83,9 @@ export default class Screen1 extends Component {
       }
       }
       console.log(cDataT,typeof(cDataT))
+      //chartArray = Array(cDataT).map((item) => item.x)
+      chartArray = cDataT.map((a)=>a.y!=null?parseInt(a.y):'')
+      console.log(chartArray,typeof(chartArray))
 
         for(let i=0;i<len-1;i++){
           for(let j=i+1;j<len;j++){
@@ -113,7 +117,6 @@ export default class Screen1 extends Component {
                           instances:this.state.instances+1})
             console.log(i+1,j+1)
           }
-        testdata = cDataT
     }
     //END OF PROFIT CHECK
 
@@ -125,7 +128,7 @@ export default class Screen1 extends Component {
     }
 
     componentDidMount() {
-      console.log(testdata)
+      console.log(chartArray)
       var that = this;
       const { navigation } = that.props;
       that.focusListener = navigation.addListener("didFocus", () => {
@@ -158,7 +161,8 @@ export default class Screen1 extends Component {
   
 
       render(){
-
+        const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
+      
       if(this.state.rCheck===false)return(
             <ScrollView>
                 <View style={styles.sectionContainer}>
@@ -185,7 +189,14 @@ export default class Screen1 extends Component {
                       />
                 </View>
                 <TouchableOpacity onPress={()=>{}}style={{marginTop:50}}>
-                            <Text>CHART INFO</Text>
+                        <LineChart
+                                  style={{ height: 200 }}
+                                  data={chartArray}
+                                  svg={{ stroke: 'rgb(134, 65, 244)' }}
+                                  contentInset={{ top: 20, bottom: 20 }}
+                                    >
+                          <Grid />
+                        </LineChart>
                 </TouchableOpacity>
                 <View style={styles.sectionRow}>
                     <Text style={styles.text}>Max Profit for 10 stocks</Text>
