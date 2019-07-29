@@ -40,7 +40,7 @@ class StockDate extends Component {
         val:'5000',
         id:'',
         data:{},
-        //date: Date.new()
+        updateFunction: ()=> {}
   }
   _HandleCellNav(){
     this.props.navigation.navigate('Screen2',
@@ -70,7 +70,7 @@ class StockDate extends Component {
             }
             console.log('Delete was success')
             console.log('Need to invoke update')
-            //this.props.updateFunction(this.props.id)
+            //this.props.updateFunction
             console.log(record.getId());
             
             
@@ -80,6 +80,11 @@ class StockDate extends Component {
         console.log('Add a value, redirect to screen 2')
         this._HandleCellNav()
     }
+  }
+  constructor(props)
+  {
+      super(props)
+      this.props.updateFunction.bind(this)
   }
 
    render(){
@@ -119,9 +124,9 @@ class StockDate extends Component {
    borderRadius:10,
    borderWidth:1,
    borderColor:'gray',
-   width: Dimensions.get('window').width/3-15,
-   height:Dimensions.get('window').width/3-15,
-   margin:5
+   width: Dimensions.get('window').width/3-25,
+   height:Dimensions.get('window').width/3-25,
+   margin:12
    
    },
    row:{

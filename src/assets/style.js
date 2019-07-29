@@ -50,6 +50,21 @@ export default styles = StyleSheet.create({
       alignSelf:'center',
       marginLeft:50
   },
+  chart: {
+    backgroundColor: '#fff',
+    justifyContent: 'center'
+},
+    btn:{
+      height:60,
+      width:100,
+      borderColor:'gray',
+      borderWidth:0.5,
+      borderRadius:10,
+      alignSelf:'center',
+      alignItems:'center',
+      justifyContent:'center',
+      marginBottom:20
+    }
   });
   
   

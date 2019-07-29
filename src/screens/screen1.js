@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Text,View, 
         TouchableOpacity,
-        Image,
+        Alert,
         FlatList,
         ScrollView,
         ActivityIndicator} from 'react-native'
@@ -12,12 +12,12 @@ import StockDate from '../components/stockDate'
 import { withNavigation } from "react-navigation";
 
 //TODO
-// Need to pass function as prop to child component stockDate.
+// Need to pass function as prop to child component stockDate. 
+// Remove the button component and bring it inside the main view.
 // Bottom Panel - 
 // Map Purechart with data / HighCharts / D3
-// Fix condition for NaN for profit check
+// Multiple scenarios?
 
-import PureChart from 'react-native-pure-chart';
 let testdata={}
 export default class Screen1 extends Component {
     constructor(props){
@@ -31,8 +31,8 @@ export default class Screen1 extends Component {
         rCheck:true,
         d1:0,
         d2:0,
-        max_highDiff:0
-  
+        max_highDiff:0,
+        instances:0
       }
     }
     
@@ -47,7 +47,7 @@ export default class Screen1 extends Component {
           data: responseJson.records.sort((a,b)=>(a.fields.Date>b.fields.Date?1:-1)),
           rCheck:false
         }, function(){
-          this.setState({chartData: this.state.data})
+          //this.setState({chartData: this.state.data})
           
         });
 
@@ -61,18 +61,39 @@ export default class Screen1 extends Component {
 
     onRef(){
       this.setState({rCheck:true})
+
     }
 
+    //START OF PROFIT CHECK 
+    // Checks max profit, date values,
     _profitCheck=()=>{
       console.log('profit check called')
-      let len = this.state.chartData.length
+      let len = this.state.data.length
       let diff = Array(len-1).fill(0)
-      for(let i=0;i<len-1;i++)
+      let cDataX = Array(len).fill('')
+      let cDataY = Array(len).fill('')
+      let cDataT = []
+      for(let i=0;i<len-1;i++){
         diff[i]= Array(len).fill(0)
-      
-        for(let i=0;i<len-1;i++)
-          for(let j=i+1;j<len;j++)
-            diff[i][j]= parseInt(this.state.chartData[j].fields.Value)-parseInt(this.state.chartData[i].fields.Value)
+        switch(i){
+          case len-2:{cDataT.push({x:this.state.data[i+1].fields.Date,y:Number.isNaN(parseInt(this.state.data[i+1].fields.Value))?null:this.state.data[i].fields.Value})}
+          default:{cDataT.push({x:this.state.data[i].fields.Date,y:Number.isNaN(parseInt(this.state.data[i].fields.Value))?null:this.state.data[i].fields.Value})}
+          
+      }
+      }
+      console.log(cDataT,typeof(cDataT))
+
+        for(let i=0;i<len-1;i++){
+          for(let j=i+1;j<len;j++){
+            diff[i][j]= parseInt(this.state.data[j].fields.Value)-parseInt(this.state.data[i].fields.Value)
+            if(Number.isNaN(diff[i][j]))
+            {
+              diff[i][j]=''
+              //console.log(i,j)
+            }
+          }
+          
+        }
         console.log(diff,typeof(diff[0]),diff[0].length)
 
         let highDiff = Array(len-1).fill(0)
@@ -88,12 +109,14 @@ export default class Screen1 extends Component {
           if(this.state.max_highDiff===diff[i][j])
           { 
             this.setState({d1:i,
-                            d2:j})
+                            d2:j,
+                          instances:this.state.instances+1})
             console.log(i+1,j+1)
           }
-        
-        console.log(d1,d2)
+        testdata = cDataT
     }
+    //END OF PROFIT CHECK
+
 
     TestFunction(){
       //console.log(this.state.chartData,data)
@@ -102,6 +125,7 @@ export default class Screen1 extends Component {
     }
 
     componentDidMount() {
+      console.log(testdata)
       var that = this;
       const { navigation } = that.props;
       that.focusListener = navigation.addListener("didFocus", () => {
@@ -122,22 +146,19 @@ export default class Screen1 extends Component {
       this.focusListener.remove();
     }
 
-    onDel(){
+    onDel(a){
+      //Need to be called from child component
+      //To refresh
       console.log('refresh called onDel')
-      this.getData()
-      that._profitCheck()
+      this.setState({rCheck:true})
+      this.getData().then(()=>this._profitCheck())
+      this.setState({rCheck:false})
+      return a=1
     }
   
 
       render(){
-        
-        let sampleData2 = [
-          {x: '2019-01-01', y: 30},
-          {x: '2019-01-02', y: 200},
-          {x: '2019-01-03', y: 170},
-          {x: '2019-01-04', y: 250},
-          {x: '2019-01-05', y: 10}
-      ]
+
       if(this.state.rCheck===false)return(
             <ScrollView>
                 <View style={styles.sectionContainer}>
@@ -149,37 +170,42 @@ export default class Screen1 extends Component {
                     <FlatList
                         data={this.state.data}
                         refreshing={this.state.rCheck}
-                        onRefresh={()=>this.onRef()}
+                        onRefresh={()=>this.onDel}
                         renderItem={({ item }) => (
 
                           <StockDate date={item.fields.Date} 
                                       val={item.fields.Value} 
                                       id={item.id} 
                                       data={item}
-                                      updateFunction={()=>this.onDel()}/>
+                                      updateFunction={this.onRef}/>
                         )}
                         //Setting the number of column
                         numColumns={3}
                         keyExtractor={(item, index) => item.id}
                       />
                 </View>
-                <TouchableOpacity onPress={(i)=>{this.TestFunction()}}style={{marginTop:50}}>
-                  <PureChart data={sampleData2} height={200}type='line' />
+                <TouchableOpacity onPress={()=>{}}style={{marginTop:50}}>
+                            <Text>CHART INFO</Text>
                 </TouchableOpacity>
                 <View style={styles.sectionRow}>
                     <Text style={styles.text}>Max Profit for 10 stocks</Text>
                     <Text style={styles.text}>Rs. {this.state.max_highDiff*10}</Text>
                 </View>
                 <View style={styles.sectionRow}>
-                    <Text style={styles.text}>Buy Date: {this.state.d1+1} June</Text>
-                    <Text style={styles.text}>Sell Date: {this.state.d2+1} June</Text>
+                    <Text style={styles.text}>Buy Date: {this.state.data[this.state.d1].fields.Date}</Text>
+                    <Text style={styles.text}>Sell Date: {this.state.data[this.state.d2].fields.Date}</Text>
                 </View>
+                <TouchableOpacity style={styles.btn} onPress={()=>this.onDel()}>
+                  <Text>REFRESH</Text>
+                </TouchableOpacity>
             </ScrollView>
         
           )
           else
           {
-            return(<ActivityIndicator/>)
+            return(<View style={styles.sectionContainer}>
+                    <ActivityIndicator/>
+                  </View>)
           }
       }
     }
