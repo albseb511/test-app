@@ -11,13 +11,17 @@ import StockDate from '../components/stockDate'
 
 import { withNavigation } from "react-navigation";
 
+import store from '../redux/store'
+import {updateUser} from '../redux/action'
+import {connect} from 'react-redux'
+import {Provider} from 'react-redux'
+import reducer from '../redux/reducer'
+
 import { LineChart, Grid, YAxis } from 'react-native-svg-charts'
 //TODO
-// Need to pass function as prop to child component stockDate. 
-// Remove the button component and bring it inside the main view.
-// Bottom Panel - 
-// Map Purechart with data / HighCharts / D3
-// Multiple scenarios?
+//Redux 
+//Logic - keep rCheck on flatlist, and call toRefresh
+// dispatch rCheck to true everytime when you require refresh.
 
 let chartArray=[]
 export default class Screen1 extends Component {
@@ -33,7 +37,8 @@ export default class Screen1 extends Component {
         d1:0,
         d2:0,
         max_highDiff:0,
-        instances:0
+        instances:0,
+        reduxRefresh:{}
       }
     }
     
@@ -61,6 +66,7 @@ export default class Screen1 extends Component {
  
 
     onRef(){
+      console.log('onRefCalled')
       this.setState({rCheck:true})
 
     }
@@ -88,7 +94,7 @@ export default class Screen1 extends Component {
       //chartArray = Array(cDataT).map((item) => item.x)
 
       //map the data into Array for chart 
-      chartArray = cDataT.map((a)=>a.y!=null?parseInt(a.y):{})
+      chartArray = cDataT.filter(a=>a.y!='').map((a)=>a.y!=null?parseInt(a.y):{})
       console.log(chartArray,typeof(chartArray))
 
         for(let i=0;i<len-1;i++){
@@ -139,7 +145,7 @@ export default class Screen1 extends Component {
         // The screen is focused
         // Call getData
         that.getData().then(()=>that._profitCheck())
-        
+        this.setState({reduxRefresh:'TEST'})
         //this.setState({chartData: this.state.data.records.sort((a,b)=>(a.fields.val>b.fields.val?1:-1)),})
         //console.log('chart data is :',this.state.chartData )
       });
@@ -153,21 +159,23 @@ export default class Screen1 extends Component {
       this.focusListener.remove();
     }
 
-    onDel(a){
+    toRefresh=()=>{
       //Need to be called from child component
       //To refresh
-      console.log('refresh called onDel')
-      this.setState({rCheck:true})
+      console.log('reduxRefresh')
+      store.dispatch(updateUser({foo: 'foo' }))
+      //console.log(store.default.getState())
       this.getData().then(()=>this._profitCheck())
       this.setState({rCheck:false})
-      return a=1
+
     }
   
 
       render(){
-        const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
+         
       
       if(this.state.rCheck===false)return(
+        <Provider store={store}>
             <ScrollView>
                 <View style={styles.sectionContainer}>
               
@@ -178,14 +186,14 @@ export default class Screen1 extends Component {
                     <FlatList
                         data={this.state.data}
                         refreshing={this.state.rCheck}
-                        onRefresh={()=>this.onDel}
+                        onRefresh={()=>this.toRefresh}
                         renderItem={({ item }) => (
 
                           <StockDate date={item.fields.Date} 
                                       val={item.fields.Value} 
                                       id={item.id} 
                                       data={item}
-                                      updateFunction={this.onRef}/>
+                                      updateFunction={this.toRefresh}/>
                         )}
                         //Setting the number of column
                         numColumns={3}
@@ -226,11 +234,11 @@ export default class Screen1 extends Component {
                     <Text style={styles.text}>End Date: {this.state.data[this.state.data.length-1].fields.Date}</Text>
                 </View>
                 
-                <TouchableOpacity style={styles.btn} onPress={()=>this.onDel()}>
+                <TouchableOpacity style={styles.btn} onPress={()=>this.toRefresh()}>
                   <Text>REFRESH</Text>
                 </TouchableOpacity>
             </ScrollView>
-        
+        </Provider>
           )
           else
           {
@@ -240,3 +248,5 @@ export default class Screen1 extends Component {
           }
       }
     }
+
+    //export default connect()(Screen1)

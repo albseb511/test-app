@@ -19,6 +19,10 @@ import Airtable from 'airtable'
 import {API_KEY,APP_NAME,TABLE_NAME} from '../assets/airtable_api'
 
 
+//import store from '../redux/configureStore'
+//import {Provider} from 'redux'
+//import {connect} from 'redux'
+
 //TO DO
 // Add value
 // Add real date values
@@ -70,7 +74,7 @@ class StockDate extends Component {
             }
             console.log('Delete was success')
             console.log('Need to invoke update')
-            //this.props.updateFunction
+            // this.props.dispatch(type:'REFRESH')
             console.log(record.getId());
             
             
@@ -89,22 +93,25 @@ class StockDate extends Component {
 
    render(){
      return(
-      <TouchableOpacity onPress={()=>{this._HandleCellNav()}}>
-        <View style={styles.MainContainer}> 
- 
-            <Text>{this.props.date}</Text>
-            <Text>Val: {this.props.val!='5000'?this.props.val:'N/A'}</Text>
-            <View style={styles.row}>
-                <TouchableOpacity onPress={()=>this._HandleButton()}>
-                {this.props.val==='5000'?(<Btn label='Add'/>):(<Btn label='Delete'/>)}
-                </TouchableOpacity>
-            </View>
-        </View>
-      </TouchableOpacity>
+        
+            <TouchableOpacity onPress={()=>{this._HandleCellNav()}}>
+                <View style={styles.MainContainer}> 
+        
+                    <Text>{this.props.date}</Text>
+                    <Text>Val: {this.props.val!='5000'?this.props.val:'N/A'}</Text>
+                    <View style={styles.row}>
+                        <TouchableOpacity onPress={()=>this._HandleButton()}>
+                        {this.props.val==='5000'?(<Btn label='Add'/>):(<Btn label='Delete'/>)}
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </TouchableOpacity>
+      
 
      )
    }
  }
+//connect()(StockDate)
 
  export default withNavigation(StockDate)
 

@@ -4,6 +4,7 @@ This is a test app.
 ### Screens
 ![Screens](https://github.com/albseb511/test-app/blob/master/src/assets/img/github.png?raw=true)
 
+A previous version without the chart
 ![GIF](https://github.com/albseb511/test-app/blob/master/src/assets/img/demo-min.gif?raw=true)
 
 ### Getting Started
