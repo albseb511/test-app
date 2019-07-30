@@ -3,7 +3,7 @@ import { createStore } from 'redux'
 import {addContact, updateUser, refreshPage} from './action'
 import reducer from './reducer'
 
-const store = createStore(reducer ,['STORE'])
+const store = createStore(reducer)
 /*
 store.dispatch(updateUser({foo: 'foo' }))
 store.dispatch(updateUser({bar: 'bar' }))

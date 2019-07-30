@@ -11,6 +11,8 @@ import {
   Dimensions
 } from 'react-native';
 
+import {connect} from 'react-redux'
+
 import {withNavigation} from 'react-navigation'
 
 import Btn from './button'
@@ -97,7 +99,7 @@ class StockDate extends Component {
             <TouchableOpacity onPress={()=>{this._HandleCellNav()}}>
                 <View style={styles.MainContainer}> 
         
-                    <Text>{this.props.date}</Text>
+                    <Text>{this.props.date}{this.props.test}</Text>
                     <Text>Val: {this.props.val!='5000'?this.props.val:'N/A'}</Text>
                     <View style={styles.row}>
                         <TouchableOpacity onPress={()=>this._HandleButton()}>
@@ -111,9 +113,16 @@ class StockDate extends Component {
      )
    }
  }
-//connect()(StockDate)
 
- export default withNavigation(StockDate)
+ mapStateToProps=(state)=>{
+   return{
+     rCheck: state.rCheck,
+     test: state.test
+   }
+ }
+
+
+ export default connect(mapStateToProps)(withNavigation(StockDate))
 
  const styles = StyleSheet.create({
     

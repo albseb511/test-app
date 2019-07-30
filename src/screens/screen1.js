@@ -11,11 +11,10 @@ import StockDate from '../components/stockDate'
 
 import { withNavigation } from "react-navigation";
 
-import store from '../redux/store'
-import {updateUser} from '../redux/action'
-import {connect} from 'react-redux'
+import store from '../redux/configureStore'
 import {Provider} from 'react-redux'
 import reducer from '../redux/reducer'
+import {refreshPageEnd} from '../redux/action'
 
 import { LineChart, Grid, YAxis } from 'react-native-svg-charts'
 //TODO
@@ -51,24 +50,16 @@ export default class Screen1 extends Component {
         
         this.setState({
           data: responseJson.records.sort((a,b)=>(a.fields.Date>b.fields.Date?1:-1)),
-          rCheck:false
+          //rCheck:false //Changed to redux
         }, function(){
           //this.setState({chartData: this.state.data})
           
         });
-
+        store.dispatch(refreshPageEnd({rCheck:false}))
       })
       .catch((error) =>{
         console.error(error);
       });
-    }
-
- 
-
-    onRef(){
-      console.log('onRefCalled')
-      this.setState({rCheck:true})
-
     }
 
     //START OF PROFIT CHECK 
@@ -163,10 +154,10 @@ export default class Screen1 extends Component {
       //Need to be called from child component
       //To refresh
       console.log('reduxRefresh')
-      store.dispatch(updateUser({foo: 'foo' }))
+      //store.dispatch(updateUser({foo: 'foo' }))
       //console.log(store.default.getState())
       this.getData().then(()=>this._profitCheck())
-      this.setState({rCheck:false})
+      //store.dispatch(refreshPageEnd({rCheck:false}))
 
     }
   
@@ -185,7 +176,7 @@ export default class Screen1 extends Component {
                 
                     <FlatList
                         data={this.state.data}
-                        refreshing={this.state.rCheck}
+                        refreshing={store.getState().rCheck}
                         onRefresh={()=>this.toRefresh}
                         renderItem={({ item }) => (
 
