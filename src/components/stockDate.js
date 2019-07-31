@@ -20,11 +20,8 @@ import Btn from './button'
 import Airtable from 'airtable'
 import {API_KEY,APP_NAME,TABLE_NAME} from '../assets/airtable_api'
 
-
-//import store from '../redux/configureStore'
-//import {Provider} from 'redux'
-//import {connect} from 'redux'
-
+import store from '../redux/configureStore'
+import {refreshPageStart} from '../redux/action'
 //TO DO
 // Add value
 // Add real date values
@@ -32,13 +29,19 @@ import {API_KEY,APP_NAME,TABLE_NAME} from '../assets/airtable_api'
 // Logic for displaying Add/Delete Button needs to be done. Check if val is null
 // Function for Add, Delete
 
+mapStateToProps=(state)=>{
+  return{
+    test:state.test
+  }
+}
+
+
 class StockDate extends Component {
     static propTypes = {
         date: PropTypes.string,
         val: PropTypes.string,
         id: PropTypes.string,
         data: PropTypes.object,
-        updateFunction: PropTypes.func
    }
 
    static defaultProps = {
@@ -46,7 +49,6 @@ class StockDate extends Component {
         val:'5000',
         id:'',
         data:{},
-        updateFunction: ()=> {}
   }
   _HandleCellNav(){
     this.props.navigation.navigate('Screen2',
@@ -76,7 +78,8 @@ class StockDate extends Component {
             }
             console.log('Delete was success')
             console.log('Need to invoke update')
-            // this.props.dispatch(type:'REFRESH')
+            store.dispatch(refreshPageStart())
+            //store.dispatch(refreshPageStart({rCheck:false}))
             console.log(record.getId());
             
             
@@ -90,7 +93,6 @@ class StockDate extends Component {
   constructor(props)
   {
       super(props)
-      this.props.updateFunction.bind(this)
   }
 
    render(){
@@ -99,7 +101,7 @@ class StockDate extends Component {
             <TouchableOpacity onPress={()=>{this._HandleCellNav()}}>
                 <View style={styles.MainContainer}> 
         
-                    <Text>{this.props.date}{this.props.test}</Text>
+                    <Text>{this.props.date}</Text>
                     <Text>Val: {this.props.val!='5000'?this.props.val:'N/A'}</Text>
                     <View style={styles.row}>
                         <TouchableOpacity onPress={()=>this._HandleButton()}>
@@ -111,13 +113,6 @@ class StockDate extends Component {
       
 
      )
-   }
- }
-
- mapStateToProps=(state)=>{
-   return{
-     rCheck: state.rCheck,
-     test: state.test
    }
  }
 

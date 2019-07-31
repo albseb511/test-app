@@ -37,7 +37,7 @@ export default class Screen1 extends Component {
         d2:0,
         max_highDiff:0,
         instances:0,
-        reduxRefresh:{}
+        rCheck:true
       }
     }
     
@@ -50,12 +50,18 @@ export default class Screen1 extends Component {
         
         this.setState({
           data: responseJson.records.sort((a,b)=>(a.fields.Date>b.fields.Date?1:-1)),
-          //rCheck:false //Changed to redux
+          rCheck:false //Changed to redux
         }, function(){
           //this.setState({chartData: this.state.data})
           
         });
-        store.dispatch(refreshPageEnd({rCheck:false}))
+        try{
+          console.log('start of try to dispatch')
+          store.dispatch(refreshPageEnd())
+        }catch(err){
+          console.log('error reducer'+err)
+        }
+
       })
       .catch((error) =>{
         console.error(error);
@@ -122,10 +128,14 @@ export default class Screen1 extends Component {
     //END OF PROFIT CHECK
 
 
-    TestFunction(){
-      //console.log(this.state.chartData,data)
-      //console.log(data.filter(d=>(d.fields.Date)))
-      
+    listenerHandler=()=>{
+      console.log('listener redux')
+      if(store.getState().test==='end')
+        console.log('listener end')
+      else if(store.getState().test==='start'){
+        console.log('listener start')
+        this.toRefresh()
+      }
     }
 
     componentDidMount() {
@@ -136,7 +146,6 @@ export default class Screen1 extends Component {
         // The screen is focused
         // Call getData
         that.getData().then(()=>that._profitCheck())
-        this.setState({reduxRefresh:'TEST'})
         //this.setState({chartData: this.state.data.records.sort((a,b)=>(a.fields.val>b.fields.val?1:-1)),})
         //console.log('chart data is :',this.state.chartData )
       });
@@ -154,8 +163,6 @@ export default class Screen1 extends Component {
       //Need to be called from child component
       //To refresh
       console.log('reduxRefresh')
-      //store.dispatch(updateUser({foo: 'foo' }))
-      //console.log(store.default.getState())
       this.getData().then(()=>this._profitCheck())
       //store.dispatch(refreshPageEnd({rCheck:false}))
 
@@ -176,20 +183,20 @@ export default class Screen1 extends Component {
                 
                     <FlatList
                         data={this.state.data}
-                        refreshing={store.getState().rCheck}
+                        refreshing={this.state.rCheck}
                         onRefresh={()=>this.toRefresh}
                         renderItem={({ item }) => (
 
                           <StockDate date={item.fields.Date} 
                                       val={item.fields.Value} 
                                       id={item.id} 
-                                      data={item}
-                                      updateFunction={this.toRefresh}/>
+                                      data={item}/>
                         )}
                         //Setting the number of column
                         numColumns={3}
                         keyExtractor={(item, index) => item.id}
                       />
+
                 </View>
                 <TouchableOpacity onPress={()=>{}}style={{marginTop:50,height: 200, flexDirection: 'row' }}>
                         <YAxis
@@ -223,10 +230,15 @@ export default class Screen1 extends Component {
                 <View style={styles.sectionRow}>
                     <Text style={styles.text}>Start Date: {this.state.data[0].fields.Date}</Text>
                     <Text style={styles.text}>End Date: {this.state.data[this.state.data.length-1].fields.Date}</Text>
+                    <Text style={styles.text}>Redux: {store.subscribe(this.listenerHandler)}</Text>
                 </View>
                 
                 <TouchableOpacity style={styles.btn} onPress={()=>this.toRefresh()}>
                   <Text>REFRESH</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.btn} onPress={()=>store.dispatch(refreshPageEnd())}>
+                  <Text>CHANGE REDUX STATE</Text>
                 </TouchableOpacity>
             </ScrollView>
         </Provider>

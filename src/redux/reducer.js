@@ -4,11 +4,11 @@
 import {REFRESH_PAGE_START,REFRESH_PAGE_END} from './action'
 
 //reducers
-//const merge = (prev,next)    => Object.assign({},prev,next)
+const merge = (prev,next)    => Object.assign({},prev,next)
 
 const initialState={
     rCheck:true,
-    test:0
+    test:'i'
   }
   /*
 const contactReducer = (state=[], action) => {
@@ -30,15 +30,12 @@ const userReducer = (state ={}, action) => {
 const reducer = (state=initialState,action)=>{
     switch(action.type){
         case REFRESH_PAGE_START:
-            console.log('refesh page start')
-            state.rCheck=true
-            break
+            return {test:'start'}
         case REFRESH_PAGE_END:
-                console.log('refesh page end')
-                state.rCheck=false
-            break
-        default: return state
+            return {test:'end'}
+
     }
+    return state
 }
 
 export default reducer
